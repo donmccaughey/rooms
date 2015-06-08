@@ -13,23 +13,32 @@ fn main() {
     println!("Starting in {}", room);
     println!("Walking north:");
     loop {
-        match room.north {
+        match room.north() {
             None => {
                 println!("No door to the north");
                 break;
             },
-            Some(i) => {
-                let optional_room = rooms.vec.get(i);
-                match optional_room {
-                    None => panic!("Missing room at index {}!", i),
-                    Some(next_room) => {
-                        room = next_room;
-                        println!("Entering {}", room)
-                    },
-                }
+            Some(next_room) => {
+                room = next_room;
+                println!("  Entering {}", room);
             },
         }
     }
-    println!("Reached the end.");
+    println!("Reached the end, turning around.");
+
+    println!("Walking south:");
+    loop {
+        match room.south() {
+            None => {
+                println!("No door to the south");
+                break;
+            },
+            Some(next_room) => {
+                room = next_room;
+                println!("  Entering {}", room);
+            },
+        }
+    }
+    println!("Done!");
 }
 
