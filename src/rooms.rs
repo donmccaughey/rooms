@@ -36,10 +36,10 @@ pub struct Rooms {
 
 
 impl Rooms {
-    pub fn build() -> Rooms {
-        let mut rooms = Rooms { 
+    pub fn build() -> Box<Rooms> {
+        let mut rooms = Box::new(Rooms { 
             vec: Vec::new(),
-        };
+        });
 
         rooms.vec.push(Room::new("room 1"));
         rooms.vec.push(Room::new("room 2"));
