@@ -51,6 +51,28 @@ impl Room {
         optional_room(self.west)
     }
 
+    pub fn doors_description(&self) -> String {
+        let mut doors: Vec<&str> = Vec::new();
+        if ! self.north.is_null() { doors.push("north"); }
+        if ! self.south.is_null() { doors.push("south"); }
+        if ! self.east.is_null() { doors.push("east"); }
+        if ! self.west.is_null() { doors.push("west"); }
+
+        match doors.len() {
+            1 => format!("There is a door to the {}.", doors[0]),
+            2 => format!("There are doors to the {} and {}.", doors[0], doors[1]),
+            3 => format!("There are doors to the {}, {} and {}.", 
+                         doors[0], doors[1], doors[2]),
+            4 => format!("There are doors in all directions."),
+            _ => panic!("Found {} doors in {}!", doors.len(), self.name),
+        }
+    }
+
+    pub fn print_description_on_entrance(&self) {
+        println!("You find yourself in {}.", self.description);
+        println!("{}", self.doors_description());
+    }
+
     unsafe fn door_north_leads_to(&mut self, room: *mut Room) {
         self.north = room;
         (*room).south = self;
@@ -86,18 +108,29 @@ pub struct Rooms {
 
 
 impl Rooms {
-    pub fn build() -> Box<Rooms> {
+    pub fn new() -> Box<Rooms> {
         let mut timmys_bedroom = Box::new(
-            Room::new("Timmy's bedroom", "A young boy's bedroom"));
-        let mut upstairs_hallway = Box::new(Room::new("upstairs hallway", "A hallway"));
+            Room::new("Timmy's bedroom", "a young boy's bedroom"));
+        let mut upstairs_hallway = Box::new(
+            Room::new("upstairs hallway", "a hallway"));
         let mut sallys_bedroom = Box::new(
-            Room::new("Sally's bedroom", "A teenage girl's bedroom"));
+            Room::new("Sally's bedroom", "a teenage girl's bedroom"));
         let mut master_bedroom = Box::new(
-            Room::new("Master bedroom", "A bedroom with a king sized bed"));
+            Room::new("master bedroom", "a bedroom with a king sized bed"));
         let mut kids_bathroom = Box::new(
-            Room::new("Kid's bathroom", "A messy bathroom with towels on the floor"));
+            Room::new("kid's bathroom", "a messy bathroom with towels on the floor"));
         let mut parents_bathroom = Box::new(
-            Room::new("Parent's bathroom", "A bathroom with a shower"));
+            Room::new("parent's bathroom", "a bathroom with a shower"));
+
+        let mut stairway = Box::new(
+            Room::new("stairway", "a stairway"));
+
+        let mut downstairs_hallway = Box::new(
+            Room::new("downstairs hallway", "a hallway"));
+        let mut livingroom = Box::new(
+            Room::new("livingroom", "a large room with a comfy sofa and a big TV"));
+        let mut kitchen = Box::new(
+            Room::new("kitchen", "a large room with a tile floor that smells like food"));
         
         unsafe {
             timmys_bedroom.door_north_leads_to(&mut *upstairs_hallway);
@@ -106,11 +139,17 @@ impl Rooms {
             sallys_bedroom.door_south_leads_to(&mut *kids_bathroom);
             master_bedroom.door_south_leads_to(&mut *upstairs_hallway);
             master_bedroom.door_west_leads_to(&mut *parents_bathroom);
+            upstairs_hallway.door_west_leads_to(&mut *stairway);
+
+            stairway.door_north_leads_to(&mut *downstairs_hallway);
+            downstairs_hallway.door_north_leads_to(&mut *livingroom);
+            downstairs_hallway.door_east_leads_to(&mut *kitchen);
         }
 
         Box::new(Rooms { 
             vec: vec!(timmys_bedroom, upstairs_hallway, sallys_bedroom, master_bedroom,
-                      kids_bathroom, parents_bathroom),
+                      kids_bathroom, parents_bathroom, stairway, downstairs_hallway,
+                      livingroom, kitchen),
         })
     }
 
@@ -118,7 +157,7 @@ impl Rooms {
         self.vec.len()
     }
 
-    pub fn main_room(&self) -> &Room {
+    pub fn first_room(&self) -> &Room {
         match self.vec.first() {
             None => panic!("First room is missing!"),
             Some(room) => room,
