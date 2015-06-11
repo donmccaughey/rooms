@@ -2,7 +2,7 @@ use std::fmt;
 use std::ptr;
 
 
-fn optional<'a, T>(p: *const T) -> Option<&'a T> {
+fn as_option<'a, T>(p: *const T) -> Option<&'a T> {
     match p.is_null() {
         true => None,
         false => unsafe {
@@ -35,19 +35,19 @@ impl Room {
     }
 
     pub fn north(&self) -> Option<&Room> {
-        optional(self.north)
+        as_option(self.north)
     }
 
     pub fn south(&self) -> Option<&Room> {
-        optional(self.south)
+        as_option(self.south)
     }
 
     pub fn east(&self) -> Option<&Room> {
-        optional(self.east)
+        as_option(self.east)
     }
 
     pub fn west(&self) -> Option<&Room> {
-        optional(self.west)
+        as_option(self.west)
     }
 
     pub fn doors_description(&self) -> String {
