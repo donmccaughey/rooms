@@ -1,6 +1,15 @@
 use std::fmt;
 use std::ptr;
-use std::collections::HashMap;
+
+
+fn optional<'a, T>(p: *const T) -> Option<&'a T> {
+    match p.is_null() {
+        true => None,
+        false => unsafe {
+            Some(&*p)
+        },
+    }
+}
 
 
 pub struct Room {
@@ -10,17 +19,6 @@ pub struct Room {
     south: *mut Room,
     east: *mut Room,
     west: *mut Room,
-}
-
-
-fn optional_room<'a>(room: *const Room) -> Option<&'a Room> {
-    if room.is_null() {
-        None
-    } else {
-        unsafe {
-            Some(&*room)
-        }
-    }
 }
 
 
@@ -37,19 +35,19 @@ impl Room {
     }
 
     pub fn north(&self) -> Option<&Room> {
-        optional_room(self.north)
+        optional(self.north)
     }
 
     pub fn south(&self) -> Option<&Room> {
-        optional_room(self.south)
+        optional(self.south)
     }
 
     pub fn east(&self) -> Option<&Room> {
-        optional_room(self.east)
+        optional(self.east)
     }
 
     pub fn west(&self) -> Option<&Room> {
-        optional_room(self.west)
+        optional(self.west)
     }
 
     pub fn doors_description(&self) -> String {
@@ -94,7 +92,6 @@ impl Room {
         (*room).east = self;
     }
 }
-
 
 
 impl fmt::Display for Room {
@@ -157,10 +154,6 @@ impl Rooms {
     fn add_room(&mut self, name: &str, description: &str) -> *mut Room {
         self.vec.push(Box::new(Room::new(name, description)));
         &mut **self.vec.last_mut().unwrap()
-    }
-
-    pub fn len(&self) -> usize {
-        self.vec.len()
     }
 
     pub fn first_room(&self) -> &Room {
