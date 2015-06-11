@@ -1,5 +1,6 @@
 use std::fmt;
 use std::ptr;
+use std::collections::HashMap;
 
 
 pub struct Room {
@@ -95,6 +96,7 @@ impl Room {
 }
 
 
+
 impl fmt::Display for Room {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         write!(formatter, "{}", self.name)
@@ -109,48 +111,52 @@ pub struct Rooms {
 
 impl Rooms {
     pub fn new() -> Box<Rooms> {
-        let mut timmys_bedroom = Box::new(
-            Room::new("Timmy's bedroom", "a young boy's bedroom"));
-        let mut upstairs_hallway = Box::new(
-            Room::new("upstairs hallway", "a hallway"));
-        let mut sallys_bedroom = Box::new(
-            Room::new("Sally's bedroom", "a teenage girl's bedroom"));
-        let mut master_bedroom = Box::new(
-            Room::new("master bedroom", "a bedroom with a king sized bed"));
-        let mut kids_bathroom = Box::new(
-            Room::new("kid's bathroom", "a messy bathroom with towels on the floor"));
-        let mut parents_bathroom = Box::new(
-            Room::new("parent's bathroom", "a bathroom with a shower"));
+        let mut rooms = Rooms {
+            vec: Vec::new(),
+        };
 
-        let mut stairway = Box::new(
-            Room::new("stairway", "a stairway"));
-
-        let mut downstairs_hallway = Box::new(
-            Room::new("downstairs hallway", "a hallway"));
-        let mut livingroom = Box::new(
-            Room::new("livingroom", "a large room with a comfy sofa and a big TV"));
-        let mut kitchen = Box::new(
-            Room::new("kitchen", "a large room with a tile floor that smells like food"));
-        
         unsafe {
-            timmys_bedroom.door_north_leads_to(&mut *upstairs_hallway);
-            timmys_bedroom.door_east_leads_to(&mut *kids_bathroom);
-            sallys_bedroom.door_west_leads_to(&mut *upstairs_hallway);
-            sallys_bedroom.door_south_leads_to(&mut *kids_bathroom);
-            master_bedroom.door_south_leads_to(&mut *upstairs_hallway);
-            master_bedroom.door_west_leads_to(&mut *parents_bathroom);
-            upstairs_hallway.door_west_leads_to(&mut *stairway);
+            let timmys_bedroom = rooms.add_room("Timmy's bedroom", "a young boy's bedroom");
+            let upstairs_hallway = rooms.add_room("upstairs hallway", "a hallway");
+            (*timmys_bedroom).door_north_leads_to(upstairs_hallway);
+            
+            let sallys_bedroom = rooms.add_room("Sally's bedroom", 
+                                                "a teenage girl's bedroom");
+            (*sallys_bedroom).door_west_leads_to(upstairs_hallway);
+            
+            let kids_bathroom = rooms.add_room("kid's bathroom", 
+                                               "a messy bathroom with towels on the floor");
+            (*kids_bathroom).door_west_leads_to(timmys_bedroom);
+            (*kids_bathroom).door_north_leads_to(sallys_bedroom);
 
-            stairway.door_north_leads_to(&mut *downstairs_hallway);
-            downstairs_hallway.door_north_leads_to(&mut *livingroom);
-            downstairs_hallway.door_east_leads_to(&mut *kitchen);
+            let master_bedroom = rooms.add_room("master bedroom", 
+                                                "a bedroom with a king sized bed");
+            (*master_bedroom).door_south_leads_to(upstairs_hallway);
+
+            let parents_bathroom = rooms.add_room("parent's bathroom", 
+                                                  "a bathroom with a shower");
+            (*parents_bathroom).door_east_leads_to(master_bedroom);
+
+            let stairway = rooms.add_room("stairway", "a stairway");
+            (*stairway).door_east_leads_to(upstairs_hallway);
+
+            let downstairs_hallway = rooms.add_room("downstairs hallway", "a hallway");
+            (*downstairs_hallway).door_south_leads_to(stairway);
+
+            let livingroom = rooms.add_room("livingroom", 
+                                            "a large room with a comfy sofa and a big TV");
+            (*livingroom).door_south_leads_to(downstairs_hallway);
+
+            let kitchen = rooms.add_room("kitchen", 
+                                         "a large room with a tile floor that smells like food");
+            (*kitchen).door_west_leads_to(downstairs_hallway);
         }
+        Box::new(rooms)
+    }
 
-        Box::new(Rooms { 
-            vec: vec!(timmys_bedroom, upstairs_hallway, sallys_bedroom, master_bedroom,
-                      kids_bathroom, parents_bathroom, stairway, downstairs_hallway,
-                      livingroom, kitchen),
-        })
+    fn add_room(&mut self, name: &str, description: &str) -> *mut Room {
+        self.vec.push(Box::new(Room::new(name, description)));
+        &mut **self.vec.last_mut().unwrap()
     }
 
     pub fn len(&self) -> usize {
@@ -158,10 +164,7 @@ impl Rooms {
     }
 
     pub fn first_room(&self) -> &Room {
-        match self.vec.first() {
-            None => panic!("First room is missing!"),
-            Some(room) => room,
-        }
+        self.vec.first().expect("first room")
     }
 }
 
