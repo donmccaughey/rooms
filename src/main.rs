@@ -28,20 +28,20 @@ fn main() {
 
     loop {
         let mut command = String::new();
-        io::stdin().read_line(&mut command).ok().expect("Failed to read command!");
+        io::stdin().read_line(&mut command).ok().expect("command");
 
-        if command.starts_with("n") {
-            room = move_to_next_room_if_possible(room, room.north(), "north");
-        } else if command.starts_with("s") {
-            room = move_to_next_room_if_possible(room, room.south(), "south");
-        } else if command.starts_with("e") {
-            room = move_to_next_room_if_possible(room, room.east(), "east");
-        } else if command.starts_with("w") {
-            room = move_to_next_room_if_possible(room, room.west(), "west");
-        } else if command.starts_with("q") {
-            break;
-        } else {
-            println!("Huh?");
+        if command.is_empty() {
+            continue;
+        }
+
+        let ch = command.chars().next().unwrap();
+        match ch {
+            'n' => room = move_to_next_room_if_possible(room, room.north(), "north"),
+            's' => room = move_to_next_room_if_possible(room, room.south(), "south"),
+            'e' => room = move_to_next_room_if_possible(room, room.east(), "east"),
+            'w' => room = move_to_next_room_if_possible(room, room.west(), "west"),
+            'q' => break,
+            _ => println!("Huh?"),
         }
     }
 }
