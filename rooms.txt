@@ -1,0 +1,8 @@
+# type=room; name; description
+# type=door; first_room; direction; second_room
+room; Timmy's bedroom; a young boy's bedroom
+room; upstairs hallway; a hallway
+door; Timmy's bedroom; north; upstairs hallway
+room; Sally's bedroom; a teenage girl's bedroom
+door; Sally's bedroom; west; upstairs hallway
+

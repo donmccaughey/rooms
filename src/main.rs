@@ -22,7 +22,14 @@ fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room,
 
 
 fn main() {
-    let rooms = rooms::Rooms::new();
+    let result = rooms::Rooms::read("rooms.txt");
+    let rooms = match result {
+        Ok(rooms) => rooms,
+        Err(error) => {
+            println!("{}", error);
+            return;
+        }
+    };
     let mut room = rooms.first_room();
     room.print_description_on_entrance();
 
