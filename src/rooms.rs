@@ -72,7 +72,7 @@ impl Room {
     }
 
     pub fn print_description_on_entrance(&self) {
-        println!("You find yourself in {}.", self.description);
+        println!("You find yourself in {}", self.description);
         println!("{}", self.doors_description());
     }
 
@@ -158,41 +158,18 @@ impl Rooms {
         };
 
         unsafe {
-            let timmys_bedroom = rooms.add_room("Timmy's bedroom", "a young boy's bedroom");
-            let upstairs_hallway = rooms.add_room("upstairs hallway", "a hallway");
-            (*timmys_bedroom).door_north_leads_to(upstairs_hallway);
-            
-            let sallys_bedroom = rooms.add_room("Sally's bedroom", 
-                                                "a teenage girl's bedroom");
-            (*sallys_bedroom).door_west_leads_to(upstairs_hallway);
-            
-            let kids_bathroom = rooms.add_room("kid's bathroom", 
-                                               "a messy bathroom with towels on the floor");
-            (*kids_bathroom).door_west_leads_to(timmys_bedroom);
-            (*kids_bathroom).door_north_leads_to(sallys_bedroom);
+            let first_room = rooms.add_room("first room", "the first room");
+            let second_room = rooms.add_room("second room", "the second room");
+            (*first_room).door_north_leads_to(second_room);
 
-            let master_bedroom = rooms.add_room("master bedroom", 
-                                                "a bedroom with a king sized bed");
-            (*master_bedroom).door_south_leads_to(upstairs_hallway);
+            let third_room = rooms.add_room("third room", "the third room");
+            (*second_room).door_east_leads_to(third_room);
 
-            let parents_bathroom = rooms.add_room("parent's bathroom", 
-                                                  "a bathroom with a shower");
-            (*parents_bathroom).door_east_leads_to(master_bedroom);
-
-            let stairway = rooms.add_room("stairway", "a stairway");
-            (*stairway).door_east_leads_to(upstairs_hallway);
-
-            let downstairs_hallway = rooms.add_room("downstairs hallway", "a hallway");
-            (*downstairs_hallway).door_south_leads_to(stairway);
-
-            let livingroom = rooms.add_room("livingroom", 
-                                            "a large room with a comfy sofa and a big TV");
-            (*livingroom).door_south_leads_to(downstairs_hallway);
-
-            let kitchen = rooms.add_room("kitchen", 
-                                         "a large room with a tile floor that smells like food");
-            (*kitchen).door_west_leads_to(downstairs_hallway);
+            let fourth_room = rooms.add_room("fourth room", "the fourth room");
+            (*third_room).door_south_leads_to(fourth_room);
+            (*fourth_room).door_west_leads_to(first_room);
         }
+
         Box::new(rooms)
     }
 

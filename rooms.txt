@@ -1,8 +1,35 @@
 # type=room; name; description
-# type=door; first_room; direction; second_room
-room; Timmy's bedroom; a young boy's bedroom
-room; upstairs hallway; a hallway
+# type=door; first room name; direction; second room name
+
+room; Timmy's bedroom; a room with blue carpet.  Plastic toys litter the floor.
+room; upstairs hallway; a long narrow room with pale carpet
 door; Timmy's bedroom; north; upstairs hallway
-room; Sally's bedroom; a teenage girl's bedroom
+
+room; Sally's bedroom; a room with pink carpet.  Clothes and shoes are strewn about.
 door; Sally's bedroom; west; upstairs hallway
+
+room; kid's bathroom; a small room with a tile floor.  There is a pile of damp towels in the corner.
+door; kid's bathroom; west; Timmy's bedroom
+door; kid's bathroom; north; Sally's bedroom
+
+room; master bedroom; a room with pale carpet.  A basket of neatly folded laundry sits next to a big bed.
+door; master bedroom; south; upstairs hallway
+
+room; parent's bathroom; a small room with a tile floor.  It smells of dried flowers and hairspray.
+door; parent's bathroom; east; master bedroom
+
+room; parent's shower; a tiny room with a hard plastic floor.  The floor and walls are damp and smell faintly musty.
+door; parent's bathroom; west; parent's shower
+
+room; stairway; a stairway.  The stairs are covered in pale carpet.
+door; stairway; east; upstairs hallway
+
+room; downstairs hallway; a narrow room with a hardwood floor.  A tall wooden box stands against one wall and ticks repeatedly.
+door; downstairs hallway; south; stairway
+
+room; livingroom; a large room with gray carpet.  On one side of the room is a big comfy sofa.  On the other side, a large panel flashes with light and periodically makes strange sounds.
+door; livingroom; south; downstairs hallway
+
+room; kitchen; a large room with a tile floor.  It smells faintly like food all around.
+door; kitchen; west; downstairs hallway
 
