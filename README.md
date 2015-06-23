@@ -7,11 +7,11 @@ Overview
 --------
 This is a Rust learning project for me, so you may find some of the code
 awkward and shortcuts may be taken here and there.  The program is a simple
-terminal-based text adventure where you navigate a graph of "rooms".  
-The rooms graph is built by reading a list of rooms (graph vertices) and 
-"doors" (graph edges) from a text file.  The `rooms.txt` file is an example.
-Currently the game world is read-only; my next big task is to add some
-mutable state to the graph of rooms.
+terminal-based text adventure where you navigate a graph of "rooms".  The 
+rooms graph is built by reading a list of rooms (graph vertices) and "doors" 
+(graph edges) from a text file.  The `rooms.txt` file is an example.  
+Currently the game world is read-only; my next big task is to add some mutable 
+state to the graph of rooms.
 
 Design
 ------
@@ -59,10 +59,10 @@ vector indices.  This approach has the advantage of staying withing Rust's
 "safe" code zone, and may have some performance advantages if your graph is
 very large, since `Vec` uses one large memory block internally to hold 
 elements.  The disadvantage is that the burden of ensuring that edges hold 
-valid indices is on you; adding a node anywhere but the end or removing a node
-can make edges invalid, leading to a mysteriously malformed graph or a runtime
-crash.  If you never modify your graph after it's built, this isn't really a
-problem. 
+valid indices is on you; adding a node anywhere but the end of the vector or 
+removing a node can make edges invalid, leading to a mysteriously malformed 
+graph or a runtime crash.  If you never modify your graph after it's built, 
+this isn't really a problem. 
 
 ### Reference Counted Ref Cells
 The `std::rc::Rc` class is a reference-counted smart pointer.  It's a
@@ -71,17 +71,17 @@ analogous to `unique_ptr` while `Rc` is like `shared_ptr`.  By itself, `Rc`
 won't allow you to build a graph; due to Rust's strict rule against multiple
 mutable references, `Rc` only allows non-mutable access to its contents.
 `RefCell` exists to overcome this problem.  A `RefCell` implements a runtime
-check to prefent multiple simultaneous mutable references to its contents.
+check to prevent multiple simultaneous mutable references to its contents.
 When you place your node in a `RefCell`, you can call `borrow_mut()` on the
-cell when you need a mutable reference to the node, even when you have an
-immutable reference to the cell.  Then you can put your `RefCell` in an `Rc`
-and weave together your graph.
+cell when you need a mutable reference to the node inside the cell, even when 
+you have an immutable reference to the cell.  Then you can put your `RefCell` 
+in an `Rc` and weave together your graph.
 
 Because `Rc` implements a *strong* reference, you are likely to create retain 
 cycles with your graph, the bane of every reference counting scheme.  The 
 standard library also included `std::rc::Weak`, a companion to `Rc` that 
 implements a weak reference count (which unfortunately did not stabilize in 
-time for the 1.0 release) You can use `Weak` to avoid retain cycles.  One way 
+time for the 1.0 release).  You can use `Weak` to avoid retain cycles.  One way 
 to employ `Weak` is to make all your graph edges weak references (e.g. 
 `Weak<RefCell<Node>>`) so that graph nodes don't pin each other in memory and 
 use a separate node collection (e.g. `Vec<Rc<RefCell<Node>>>`) to provide 
@@ -111,5 +111,5 @@ a vector (`Vec<Box<Room>>`) that acts as the owner of the nodes.
 
 
 
-[1][https://github.com/nrc/r4cppp/blob/master/graphs/README.md]
+[1]: https://github.com/nrc/r4cppp/blob/master/graphs/README.md
 
