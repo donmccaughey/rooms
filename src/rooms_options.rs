@@ -34,7 +34,7 @@ impl RoomsOptions {
         match rooms_options.options.parse(&args[1..]) {
             Ok(found_matches) => matches = found_matches,
             Err(error) => {
-                writeln!(&mut io::stderr(), "{}", error).unwrap();
+                writeln!(io::stderr(), "{}", error).unwrap();
                 rooms_options.print_usage_and_exit(2);
             },
         };

@@ -2,6 +2,8 @@ mod rooms;
 mod rooms_options;
 
 use std::io;
+use std::io::Write;
+use std::process;
 
 
 fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room, 
@@ -22,13 +24,18 @@ fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room,
 }
 
 
+fn print_error_and_exit(error: io::Error) -> ! {
+    writeln!(io::stderr(), "{}", error).unwrap();
+    process::exit(2);
+}
+
+
 fn main() {
     let options = rooms_options::RoomsOptions::new();
     let rooms = match options.roomsfile {
-        Some(roomsfile) => {
+        Some(ref roomsfile) => 
             rooms::Rooms::read(&roomsfile)
-                         .unwrap_or_else(|e| panic!("{}", e))
-        },
+                         .unwrap_or_else(|e| print_error_and_exit(e)),
         None => rooms::Rooms::new(),
     };
     
@@ -37,7 +44,8 @@ fn main() {
 
     loop {
         let mut command = String::new();
-        io::stdin().read_line(&mut command).ok().expect("command");
+        io::stdin().read_line(&mut command)
+                   .unwrap_or_else(|e| print_error_and_exit(e));
 
         if command.is_empty() {
             continue;
