@@ -1,6 +1,10 @@
+extern crate getopts;
+
 mod rooms;
 
+use std::env;
 use std::io;
+use getopts::Options;
 
 
 fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room, 
@@ -22,14 +26,30 @@ fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room,
 
 
 fn main() {
-    let result = rooms::Rooms::read("rooms.txt");
-    let rooms = match result {
-        Ok(rooms) => rooms,
-        Err(error) => {
-            println!("{}", error);
-            return;
-        }
+    let mut options = Options::new();
+    options.optflag("h", "help", "print this help message");
+
+    let args: Vec<String> = env::args().collect();
+    let program = args[0].clone();
+    let matches = match options.parse(&args[1..]) {
+        Ok(matches) => matches,
+        Err(error) => { panic!(error.to_string()) },
     };
+
+    if matches.opt_present("h") {
+        let brief = format!("Usage: {} [roomsfile]", program);
+        print!("{}", options.usage(&brief));
+        return; 
+    }
+
+    let rooms = match matches.free.first() {
+        Some(roomsfile) => {
+            rooms::Rooms::read(roomsfile)
+                         .unwrap_or_else(|e| panic!("{}", e))
+        },
+        None => rooms::Rooms::new(),
+    };
+    
     let mut room = rooms.first_room();
     room.print_description_on_entrance();
 

@@ -1,5 +1,9 @@
 [package]
-
 name = "Rooms"
 version = "0.0.1"
 authors = ["Don McCaughey <don@donm.cc>"]
+
+
+[dependencies]
+getopts = "*"
+
