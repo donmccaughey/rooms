@@ -182,8 +182,7 @@ impl Rooms {
 
         for result in reader.lines() {
             let line = try!(result);
-            let whitespace: &[_] = &[' ', '\n', '\r', '\t'];
-            let trimmed_line = line.trim_matches(whitespace);
+            let trimmed_line = line.trim();
             if trimmed_line.is_empty() { continue; }
             if trimmed_line.starts_with("#") { continue; }
             let columns: Vec<&str> = trimmed_line.split(';').collect();
@@ -193,8 +192,8 @@ impl Rooms {
                         let message = format!("Expected 3 columns for room, found {}", columns.len()); 
                         return Err(RoomsError::InvalidFile(message));
                     }
-                    let name = columns[1].trim_matches(whitespace);
-                    let description = columns[2].trim_matches(whitespace);
+                    let name = columns[1].trim();
+                    let description = columns[2].trim();
                     rooms.add_room(name, description);
                 },
                 "door" => {
@@ -202,9 +201,9 @@ impl Rooms {
                         let message = format!("Expected 4 columns for door, found {}", columns.len());
                         return Err(RoomsError::InvalidFile(message));
                     }
-                    let first_room_name = columns[1].trim_matches(whitespace);
-                    let direction = columns[2].trim_matches(whitespace);
-                    let second_room_name = columns[3].trim_matches(whitespace);
+                    let first_room_name = columns[1].trim();
+                    let direction = columns[2].trim();
+                    let second_room_name = columns[3].trim();
 
                     unsafe {
                         let first_room: *mut Room; 
