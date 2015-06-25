@@ -1,6 +1,7 @@
 mod rooms;
 mod rooms_options;
 
+use std::error;
 use std::io;
 use std::io::Write;
 use std::process;
@@ -24,7 +25,7 @@ fn move_to_next_room_if_possible<'a>(room: &'a rooms::Room,
 }
 
 
-fn print_error_and_exit(error: io::Error) -> ! {
+fn print_error_and_exit<E: error::Error>(error: E) -> ! {
     writeln!(io::stderr(), "{}", error).unwrap();
     process::exit(2);
 }

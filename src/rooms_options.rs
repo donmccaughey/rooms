@@ -1,6 +1,5 @@
 extern crate getopts;
 
-use self::getopts::Options;
 use std::env;
 use std::io;
 use std::io::Write;
@@ -8,7 +7,7 @@ use std::process;
 
 
 pub struct RoomsOptions {
-    options: Options,
+    options: getopts::Options,
     pub command: String,
     pub roomsfile: Option<String>,
 }
@@ -24,7 +23,7 @@ impl RoomsOptions {
     pub fn new() -> RoomsOptions {
         let args: Vec<_> = env::args().collect();
         let mut rooms_options = RoomsOptions {
-            options: Options::new(),
+            options: getopts::Options::new(),
             command: args[0].clone(),
             roomsfile: None,
         };
